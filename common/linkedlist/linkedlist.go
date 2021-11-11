@@ -65,7 +65,7 @@ func (x *linkedList) Back() interface{} {
 	if x.Empty() {
 		panic(ErrListEmpty)
 	}
-	return x.tail.next.val
+	return x.tail.val
 }
 
 // checkEmpty panic if list is empty.
@@ -105,6 +105,9 @@ func (x *linkedList) PopFront() (e interface{}) {
 	e = x.head.next.val
 	x.head.next = x.head.next.next
 	x.len--
+	if !x.Empty() {
+		x.head.next.prev = x.head
+	}
 	return
 }
 
