@@ -1,6 +1,10 @@
 package linkedlist
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 // LinkedList defines a couple of linked list operations.
 // When updating or popping a node, if the node doesn't exist.
@@ -81,7 +85,7 @@ func (x *linkedList) checkFull() {
 // PushBack links a element to the end of the list. It's an O(1) operation.
 func (x *linkedList) PushBack(e interface{}) {
 	x.checkFull()
-	x.tail.next.next = &node{val: e, prev: x.tail.next}
+	x.tail.next = &node{val: e, prev: x.tail}
 	x.tail = x.tail.next
 	x.len++
 }
@@ -107,8 +111,9 @@ func (x *linkedList) PopFront() (e interface{}) {
 // PopBack removes the last element of the list and returns its value. It's an O(1) operation.
 func (x *linkedList) PopBack() (e interface{}) {
 	x.checkEmpty()
-	e = x.tail.next.next.val
-	x.tail.next.next = nil
+	e = x.tail.val
+	x.tail = x.tail.prev
+	x.tail.next = nil
 	x.len--
 	return
 }
@@ -121,4 +126,24 @@ func (x *linkedList) Len() int {
 // Empty returns true if list does not contain any elements. It's an O(1) operation.
 func (x *linkedList) Empty() bool {
 	return x.Len() == 0
+}
+
+func (x *linkedList) String() string {
+	var (
+		first = true
+		cur   = x.head
+		sb    = strings.Builder{}
+	)
+	sb.WriteByte('[')
+	for cur.next != nil {
+		cur = cur.next
+		if first {
+			sb.WriteString(fmt.Sprintf("%v", cur.val))
+			first = false
+			continue
+		}
+		sb.WriteString(fmt.Sprintf(" -> %v", cur.val))
+	}
+	sb.WriteByte(']')
+	return sb.String()
 }
